@@ -2,12 +2,11 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// Register User :/api/user/register
+// Register
 export const register = async (req, res) => {
   try {
     let { name, email, password } = req.body;
 
-    // 🔧 normalize email (fix hidden bugs)
     email = email.toLowerCase();
 
     if (!name || !email || !password) {
@@ -50,17 +49,15 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
     return res.json({ success: false, message: error.message });
   }
 };
 
-// Login User :/api/user/login
+// Login
 export const login = async (req, res) => {
   try {
     let { email, password } = req.body;
 
-    // 🔧 normalize email
     email = email.toLowerCase();
 
     if (!email || !password) {
@@ -72,7 +69,6 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    // 🔧 better debugging messages
     if (!user) {
       return res.json({ success: false, message: "User not found" });
     }
@@ -105,7 +101,34 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+// Check Auth
+export const isAuth = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+
+    return res.json({ success: true, user });
+  } catch (error) {
     console.log(error.message);
+    return res.json({ success: false, message: error.message });
+  }
+};
+
+// Logout
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite:
+        process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+
+    return res.json({ success: true, message: "Logged Out" });
+  } catch (error) {
     return res.json({ success: false, message: error.message });
   }
 };
