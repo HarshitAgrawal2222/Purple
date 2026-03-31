@@ -8,22 +8,20 @@ const MyOrder = () => {
     const {currency,axios,user} = useAppContext()
 
     const fetchMyOrders = async ()=>{
-       try {
-        const {data} = await axios.get('/api/order/user')
-        if(data.success){
-            setMyOrders(data.orders)
+        try {
+         const { data } = await axios.get('/api/order/user', {
+           withCredentials: true
+         });
+     
+         console.log("ORDERS:", data);
+     
+         if(data.success){
+             setMyOrders(data.orders)
+         }
+        } catch (error) {
+         console.log(error);
         }
-       } catch (error) {
-        console.log(error);
-       }
-    }
- 
-    useEffect(()=>{
-        if(user){
-        fetchMyOrders()
-        }
-    },[user])
-
+     }
 
   return (
     <div className='mt-16 pb-16'>
