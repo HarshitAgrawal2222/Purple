@@ -160,15 +160,10 @@ export const stripeWebhooks = async (request,response)=>{
 // Get Orders by User ID : /api/order/user
 export const getUserOrders = async (req,res) => {
     try {
-        const userId = req.userId;  // ✅ FIX
+        const userId = req.userId;
 
-        console.log("USER ID:", userId); // debug
-
-        const orders = await Order.find({
-            userId,
-            $or: [{ paymentType: "COD" }, { isPaid: true }]
-        })
-        .populate("items.product address")
+        const orders = await Order.find({ userId })
+        .populate("items.product") // ✅ FIXED
         .sort({ createdAt: -1 });
 
         res.json({ success: true, orders });
@@ -177,7 +172,6 @@ export const getUserOrders = async (req,res) => {
         res.json({ success: false, message: error.message });
     }
 };
-
 // Get All Orders (for seller /admin) :/api/order/seller
 export const getAllOrders = async (req,res) => {
     try {
