@@ -5,10 +5,21 @@ import { addProduct, changeStock, productById, productList } from '../controller
 
 const productRouter = express.Router();
 
-productRouter.post('/add', upload.array(["images"]),authSeller,
-addProduct);
-productRouter.get('/list',productList)
-productRouter.get('/id',productById)
-productRouter.post('/stock',authSeller, changeStock)
+// Add Product
+productRouter.post(
+  '/add',
+  authSeller,
+  upload.array("images"), // ✅ FIXED
+  addProduct
+);
+
+// Get all products
+productRouter.get('/list', productList);
+
+// Get product by id (FIXED)
+productRouter.get('/id/:id', productById);
+
+// Change stock
+productRouter.post('/stock', authSeller, changeStock);
 
 export default productRouter;
