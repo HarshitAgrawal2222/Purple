@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
-import { dummyOrders } from '../assets/assets'
 
 const MyOrder = () => {
 
@@ -22,6 +21,13 @@ const MyOrder = () => {
          console.log(error);
         }
      }
+
+    // ✅ ADD THIS
+    useEffect(() => {
+        if(user){
+            fetchMyOrders();
+        }
+    }, [user]);
 
   return (
     <div className='mt-16 pb-16'>
