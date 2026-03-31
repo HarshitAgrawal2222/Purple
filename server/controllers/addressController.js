@@ -1,52 +1,40 @@
-import Address from "../models/address.js"
+import Address from "../models/Address.js";
 
-
-//Add Address :/api/address/add
+// ADD ADDRESS
 export const addAddress = async (req, res) => {
     try {
-        const userId = req.userId; // ✅ from auth
+        const userId = req.userId; // ✅ FIX
+        const addressData = req.body;
 
-        const {
-            firstName,
-            lastName,
-            email,
-            street,
-            city,
-            state,
-            zipcode,
-            country,
-            phone
-        } = req.body;
+        if (!addressData) {
+            return res.json({ success: false, message: "No data received" });
+        }
 
         await Address.create({
             userId,
-            firstName,
-            lastName,
-            email,
-            street,
-            city,
-            state,
-            zipcode,
-            country,
-            phone
+            ...addressData
         });
 
-        res.json({ success: true, message: "Address Added" });
+        res.json({ success: true, message: "Address Added Successfully" });
 
     } catch (error) {
-        console.log(error.message);
+        console.log("ADD ADDRESS ERROR:", error); // 👈 VERY IMPORTANT
         res.json({ success: false, message: error.message });
     }
 };
 
-//get Address : /api/address/get
-export const getAddress = async(req,res)=>{
-try {
-    const userId = req.userId; // ✅ from auth middleware
-    const addresses = await Address.find({userId})
-    res.json({success:true, addresses})
-} catch (error) {
-    console.log(error.message);
-    res.json({success:false,message:error.message})
-}
-}
+
+// GET ADDRESS
+export const getAddress = async (req, res) => {
+    try {
+        const userId = req.userId; // ✅ FIX
+
+        const addresses = await Address.find({ userId });
+
+        res.json({ success: true, addresses });
+
+    } catch (error) {
+        console.log("GET ADDRESS ERROR:", error);
+        res.json({ success: false, message: error.message });
+    }
+};
